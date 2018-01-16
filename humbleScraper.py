@@ -84,18 +84,19 @@ class page:
                 price_full     : Original item price, usually striked out - eg: "$40.00"
         """
         try: # Wait till parent container loads in
-            priceInfo = self.wait.until(EC.presence_of_element_located((By.XPATH, "//span[@class='price-information']")))
+            parentDiv = "//div[@class='price-info']"
+            priceInfo = self.wait.until(EC.presence_of_element_located((By.XPATH, parentDiv)))
         except TimeoutException:
             log.critical("PriceInformation timed out", exc_info=1)
             return False
         else:
             # Get price data and build output dict
-            price_preview = self.driver.find_element(By.XPATH, "//span[@class='price-information']/span[@itemprop='offers']").text
-            price = self.driver.find_element(By.XPATH, "//span[@class='price-information']/meta[@itemprop='price']").get_attribute("content")
-            price_currency = self.driver.find_element(By.XPATH, "//span[@class='price-information']/meta[@itemprop='priceCurrency']").get_attribute("content")
-            availability = self.driver.find_element(By.XPATH, "//span[@class='price-information']/link[@itemprop='availability']").get_attribute("href")
+            price_preview = self.driver.find_element(By.XPATH, "{}/span[@itemprop='offers']".format(parentDiv)).text
+            price = self.driver.find_element(By.XPATH, "{}/meta[@itemprop='price']".format(parentDiv)).get_attribute("content")
+            price_currency = self.driver.find_element(By.XPATH, "{}/meta[@itemprop='priceCurrency']".format(parentDiv)).get_attribute("content")
+            availability = self.driver.find_element(By.XPATH, "{}/link[@itemprop='availability']".format(parentDiv)).get_attribute("href")
 
-            log.debug("{} and& {} and& {}".format(price, price_currency, availability))
+            #log.debug("{} and& {} and& {}".format(price, price_currency, availability))
             info = {"price_preview"  :   price_preview,
                     "price"         :   price,
                     "price_currency" :   price_currency,
