@@ -2,3 +2,4 @@ __pycache__
 ex1.py
 *.exe
 *.log
+venv*

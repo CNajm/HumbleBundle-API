@@ -32,7 +32,7 @@ class page:
     def getTimeLeft(self):
         """
         Gets time left for promo. Works for free game promotions, limited time sales, and anything with a timer.
-        Returns string
+        Returns tuple   (string as seen on website, dictionary with string keys)
         """
         try:
             timer = self.wait.until(EC.presence_of_element_located((By.XPATH, "//div[@class='promo-timer-view']/div[@class='timer']")))
@@ -49,10 +49,12 @@ class page:
                 for i in timedivs:
                     time_left.append(i.text)
                 time_left = list(filter(None, time_left))
-                #log.debug("NOT 8, rescanning")
-                #log.debug(time_left)
+                log.debug("NOT 8, rescanning")
+                log.debug(time_left)
 
-            return " ".join(time_left) # Return this
+            d = dict([(k, v) for v, k in zip(time_left[::2], time_left[1::2])])
+            print(d)
+            return " ".join(time_left), d # Return this
 
 
     def getProductName(self):
@@ -105,17 +107,20 @@ class page:
 
             # Get sale data
             try:
-                self.driver.find_element(By.XPATH, "//div[@class='sale-information']")
+                self.driver.find_element(By.XPATH, "//span[@class='discount-amount']")
 
             except NoSuchElementException:
                 log.debug("Didn't find any sale data, passing...")
 
             else:
-                price_modifier = self.driver.find_element(By.XPATH, "//div[@class='sale-information']/span[@class='sale-box']").text
-                price_full = self.driver.find_element(By.XPATH, "//span[@class='price-information']/*[@class='full-price']").text
+                price_modifier = self.driver.find_element(By.XPATH, "//span[@class='discount-amount']").text
+                price_full = self.driver.find_element(By.XPATH, "//span[@class='full-price']").text
                 info.update({"price_modifier" : price_modifier, "price_full" : price_full})
 
             return info
+
+    def getAll(self):
+        return {"price_info": self.getPriceInformation(), "name": self.getProductName(), "time_info": self.getTimeLeft()}
 
     def close(self):
         self.driver.quit()

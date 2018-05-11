@@ -1,4 +1,4 @@
-Retrieves information from [Humble Bundle](https://www.humblebundle.com) store pages smoothly and cleanly using selenium.
+A small script to retrieve **Name**, **Price/Sale**, and **Time** information from [Humble Bundle](https://www.humblebundle.com) store links for use in bots or webhooks. uses selenium.
 <br>
 >You need a [PhantomJS](http://phantomjs.org) executable in your PATH environment
 
@@ -10,7 +10,8 @@ import humbleScraper
 mypage = humbleScraper.page("https://www.humblebundle.com/store/LIMITED_TIME_OFFER_PAGE")
 timer = mypage.getTimeLeft()
 
-# >> 2 days 7 hours 49 mins 35 secs
+# >> ('1 days 16 hours 46 mins 56 secs',
+#    {'days': '1', 'hours': '16', 'mins': '46', 'secs': '56'})
 ```
 
 **Getting a product's name**
@@ -30,7 +31,11 @@ import humbleScraper
 mypage = humbleScraper.page("https://www.humblebundle.com/store/PRODUCT_PAGE")
 name = mypage.getPriceInformation()
 
-# >> {'price_preview': '$14.99 USD', 'price_full': '$24.99', 'price_currency': 'USD', 'price': '14.99', 'price_modifier': '-40%', 'availability': 'http://schema.org/InStock'}
+# On sale
+# >> {'price_preview': '$14.99 USD', 'price_full': '$24.99', 'price_currency': 'USD', 'price': '14.99', 'price_modifier': '-40%', 'availability': 'InStock'}
+
+# Limited Free offer
+# >> {'price_preview': 'FREE!', 'price_full': '$14.99', 'price_currency': 'USD', 'price': '0', 'price_modifier': '-100%', 'availability': 'InStock'}
 ```
 
 ## License
